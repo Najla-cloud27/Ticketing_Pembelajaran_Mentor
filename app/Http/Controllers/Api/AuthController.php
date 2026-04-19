@@ -2,27 +2,29 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        // ini melakukan pengecekkan email first itu memgambil data yang paling atas dan mirip
         $user = User::where('email', $request->email)->first();
-        if (! user) {
-            return response()->json([
-                'message' => 'Email engga ketemu',
+        if (! $user) {
+            return response([
+                'message' => ['User not found'],
             ], 404);
         }
 
         if (! Hash::check($request->password, $user->password)) {
-            return response()->json([
-                'message' => 'Password Salah',
-            ], 401);
+            return response([
+                'message' => ['Incorrect password'],
+            ], 404);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
+
         return response([
             'user'  => $user,
             'token' => $token,
@@ -32,8 +34,9 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
+
         return response([
-            'message' => 'Logout Berhasil',
+            'message' => 'Logout telah berhasil',
         ], 200);
     }
 
@@ -42,7 +45,7 @@ class AuthController extends Controller
         $request->validate([
             'name'     => 'required|string',
             'email'    => 'required|string|email|unique:users',
-            'phone'    => 'required|string',
+            'phone'    => 'required|string|unique:users',
             'password' => 'required|string|min:8',
         ]);
 
@@ -50,7 +53,7 @@ class AuthController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'phone'    => $request->phone,
-            'password' => $request->password,
+            'password' => Hash::make($request->password),
         ]);
 
         return response([
