@@ -11,13 +11,13 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $user = User::where('email', $request->email)->first();
-        if (! $user) {
+        if (!$user) {
             return response([
                 'message' => ['User not found'],
             ], 404);
         }
 
-        if (! Hash::check($request->password, $user->password)) {
+        if (!Hash::check($request->password, $user->password)) {
             return response([
                 'message' => ['Incorrect password'],
             ], 404);

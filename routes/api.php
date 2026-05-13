@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\OrderItemController;
 use App\Http\Controllers\Api\ProductsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,3 +23,8 @@ Route::apiResource('/api-product', ProductsController::class)->middleware('auth:
 
 // Route untuk --api/ atau route list, api kategori
 Route::apiResource('/api-categories', CategoryController::class)->middleware('auth:sanctum');
+
+// Route untuk order
+Route::apiResource('/api-orders', OrderController::class)->middleware('auth:sanctum');
+// Route untuk orderItems
+Route::apiResource('/api-orders-items', OrderItemController::class)->middleware('auth:sanctum');
